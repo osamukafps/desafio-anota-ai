@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'feature*'
+
+jobs:
+  coninuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Open PR to Develop
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: develop
+          title: Automatically created Pull Request
+          body: This is an automatically created Pull Request triggered by a commit in a feature branch.

@@ -91,6 +91,30 @@ class CategoryController {
         }
 
     }
+
+    async removeCategory(req, res) {
+
+        try {
+
+            const id = req.params.id;
+
+            const category = await Category.deleteOne({ id: id });
+
+            if(category.deletedCount <= 0) { 
+                return res.status(404).json({
+                    message: 'Could not delete',
+                })
+            }
+
+            return res.status(204);
+
+        } catch(err) {
+            return res.status(500).json({
+                message: 'Internal Server Error',
+                error: err.message
+            });
+        }
+    }
 }
 
 module.exports = new CategoryController();

@@ -1,14 +1,12 @@
 name: CI
-
 on:
   push:
     branches:
-      - 'feature*'
+      - 'feature/*'
 
 jobs:
-  coninuous-integration:
+  create-pull-request:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

@@ -106,7 +106,7 @@ class CategoryController {
                 })
             }
 
-            return res.status(204);
+            return res.status(204).json({});
 
         } catch(err) {
             return res.status(500).json({

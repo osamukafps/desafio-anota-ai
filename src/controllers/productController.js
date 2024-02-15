@@ -115,6 +115,30 @@ class ProductController {
             });
         }
     }
+
+    async removeProduct(req, res) {
+
+        try {
+
+            const id = req.params.id;
+
+            const product = await Product.deleteOne({ id: id });
+
+            if(product.deletedCount <= 0) {
+                return res.status(404).json({
+                    message: 'Could not delete'
+                });
+            }
+
+            return res.status(204).json({});
+
+        } catch(err) {
+            return res.status(500).json({
+                message: 'Internal Server Error',
+                error: err.message
+            });
+        }
+    }
 }
 
 module.exports = new ProductController();

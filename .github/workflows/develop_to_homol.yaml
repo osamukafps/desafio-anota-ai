@@ -1,5 +1,4 @@
 name: Test and Deploy to Homol
-
 on:
   push:
     branches:
@@ -22,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with Jest
+        run: npx jest
 
   deploy:
     needs: test
@@ -40,3 +39,4 @@ jobs:
           branch: homol
           title: Automatically created Pull Request from Develop
           body: This is an automatically created Pull Request triggered by a merge into the develop branch.
+          approve-comment: true

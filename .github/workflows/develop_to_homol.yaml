@@ -1,5 +1,4 @@
-name: Test and Deploy to Homol
-
+name: Develop-To-Homol
 on:
   push:
     branches:

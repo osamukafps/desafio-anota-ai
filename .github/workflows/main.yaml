@@ -19,6 +19,10 @@ jobs:
           title: Automatically created Pull Request
           body: This is an automatically created Pull Request triggered by a commit in a feature branch.
 
+      - name: Extract PR Number
+        id: extract_pr_number
+        run: echo "::set-output name=pr_number::$(echo ${{ steps.create_pr.outputs.pull_request_number }})"
+
   merge_develop:
     name: Merge to Develop
     runs-on: ubuntu-latest
@@ -32,7 +36,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git fetch origin pull/${{ github.event.pull_request.number }}/merge:PRMerge
+          git fetch origin pull/${{ needs.deploy.outputs.pr_number }}/merge:PRMerge
           git checkout develop
           git merge PRMerge --no-edit
           git push origin develop

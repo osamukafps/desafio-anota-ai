@@ -31,6 +31,12 @@ jobs:
       - name: List Branches
         run: git branch -a
 
+      - name: Fetch Develop
+        run: git fetch origin develop
+
+      - name: Checkout Develop branch
+        run: git checkout develop
+
       - name: Merge Pull Request
         run: |
           git config --global user.name "GitHub Actions"

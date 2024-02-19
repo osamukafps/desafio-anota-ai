@@ -39,3 +39,4 @@ jobs:
           branch: homol
           title: Automatically created Pull Request from Develop
           body: This is an automatically created Pull Request triggered by a merge into the develop branch.
+          approve-comment: true

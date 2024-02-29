@@ -1,7 +1,9 @@
 const Product = require('../models/productModel');
+const { sendMessageToTopic } = require('../services/NotificationService');
+const { buildProductMessage } = require('../builders/buildProductMessage');
 
 class ProductController {
-    
+
     async createProduct(req, res){
         
         try {
@@ -29,6 +31,10 @@ class ProductController {
                 category,
                 ownerId
             });
+
+            const message = buildProductMessage(newProduct);
+
+            await sendMessageToTopic(message);
 
             return res.status(201).json(newProduct);
         } catch(err)

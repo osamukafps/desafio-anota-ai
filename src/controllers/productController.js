@@ -1,7 +1,9 @@
 const Product = require('../models/productModel');
+const { sendMessageToTopic } = require('../services/NotificationService');
+const { buildProductMessage } = require('../builders/buildProductMessage');
 
 class ProductController {
-    
+
     async createProduct(req, res){
         
         try {
@@ -30,6 +32,10 @@ class ProductController {
                 ownerId
             });
 
+            const message = buildProductMessage(newProduct);
+
+            await sendMessageToTopic(message);
+
             return res.status(201).json(newProduct);
         } catch(err)
         {
@@ -45,7 +51,7 @@ class ProductController {
 
             const products = await Product.find({});
 
-            if(!products) {
+            if(!products || products.length === 0) {
                 return res.status(404).json({
                     message: 'Product not found!'
                 })
@@ -111,6 +117,30 @@ class ProductController {
         } catch(err) {
             return res.status(500).json({
                 message: 'Error when updating...',
+                error: err.message
+            });
+        }
+    }
+
+    async removeProduct(req, res) {
+
+        try {
+
+            const id = req.params.id;
+
+            const product = await Product.deleteOne({ id: id });
+
+            if(product.deletedCount <= 0) {
+                return res.status(404).json({
+                    message: 'Could not delete'
+                });
+            }
+
+            return res.status(204).json({});
+
+        } catch(err) {
+            return res.status(500).json({
+                message: 'Internal Server Error',
                 error: err.message
             });
         }

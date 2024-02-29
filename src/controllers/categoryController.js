@@ -6,14 +6,31 @@ class CategoryController {
 
         try {
             const { title, description, ownerId} = req.body;
-            const newCategory = Category.create({
+
+            const categoryExists = await Category.findOne({
+                title: title,
+                description: description,
+                ownerId: ownerId,
+            });
+
+            if(categoryExists) {
+                return res.status(409).json({
+                    message: 'Category already exists',
+                    data: categoryExists
+                });
+            }
+
+            const newCategory = await Category.create({
                 id: Math.floor(Math.random() * 100000) + 1,
                 title,
                 description,
                 ownerId
             });
 
-            res.status(201).json(newCategory);
+            return res.status(201).json({
+                message: 'Created',
+                data: await Category.findOne({ id: newCategory.id})
+            });
 
         } catch(err){
             res.status(500).json({
@@ -27,7 +44,7 @@ class CategoryController {
         
         try {
             const id = req.params.id;
-            const udpdate = req.body;
+            const update = req.body;
 
             const categoryToUpdate = await Category.findOne({ id: id });
 
@@ -42,6 +59,54 @@ class CategoryController {
             return res.status(200).json({
                 category: await Category.findOne({ id: id })
             });
+
+        } catch(err) {
+            return res.status(500).json({
+                message: 'Internal Server Error',
+                error: err.message
+            });
+        }
+    }
+
+    async getAllCategories(req, res) {
+        
+        try {
+
+            const categoryList = await Category.find({});
+
+            if(!categoryList) {
+                return res.status(404).json({
+                    message: 'Categories not found'
+                });
+            }
+
+            return res.status(200).json({
+                categories: categoryList
+            })
+        } catch(err) {
+            return res.status(500).json({
+                message: 'Internal Server Error',
+                error: err.message
+            });
+        }
+
+    }
+
+    async removeCategory(req, res) {
+
+        try {
+
+            const id = req.params.id;
+
+            const category = await Category.deleteOne({ id: id });
+
+            if(category.deletedCount <= 0) { 
+                return res.status(404).json({
+                    message: 'Could not delete',
+                })
+            }
+
+            return res.status(204).json({});
 
         } catch(err) {
             return res.status(500).json({
